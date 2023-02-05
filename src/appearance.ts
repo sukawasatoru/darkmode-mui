@@ -20,11 +20,11 @@ import {atom, selector} from 'recoil';
 export type Appearance = 'system' | 'light' | 'dark';
 
 export const appearanceRawState = atom<Appearance>({
-  key: 'appearanceRow',
+  key: 'appearanceRaw',
   default: 'system',
   effects: [
     ({setSelf, onSet, resetSelf}) => {
-      console.log(`[appearanceRow] effects[0]`);
+      console.log(`[appearanceRaw] effects[0]`);
 
       const key = 'appearance';
       const storageValue = localStorage.getItem(key) as Appearance | string | null;
@@ -35,16 +35,16 @@ export const appearanceRawState = atom<Appearance>({
           setSelf(storageValue);
           break;
         case null:
-          console.log(`[appearanceRow] effects[0] ignore null`);
+          console.log(`[appearanceRaw] effects[0] ignore null`);
           break;
         default:
-          console.log(`[appearanceRow] effects[0] reset value: ${storageValue}`);
+          console.log(`[appearanceRaw] effects[0] reset value: ${storageValue}`);
           resetSelf();
       }
 
       // ref. https://recoiljs.org/docs/guides/atom-effects/#local-storage-persistence
       onSet((newValue, _, isReset) => {
-        console.log(`[appearanceRow] onSet: ${newValue}`);
+        console.log(`[appearanceRaw] onSet: ${newValue}`);
         isReset ?
           localStorage.removeItem(key) :
           localStorage.setItem(key, newValue);
@@ -58,7 +58,10 @@ const isSystemDarkState = atom<boolean>({
   default: false,
   effects: [
     ({setSelf}) => {
+      console.log(`[isSystemDark] effects[0]`);
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      setSelf(mediaQuery.matches);
+
       const cb = (ev: MediaQueryListEvent) => setSelf(ev.matches);
       mediaQuery.addEventListener('change', cb);
 
