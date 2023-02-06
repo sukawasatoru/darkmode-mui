@@ -15,11 +15,10 @@
  */
 
 import {Computer, DarkMode, LightMode} from '@mui/icons-material';
-import {List, ListItemButton, ListItemIcon, ListItemText, Popover, ToggleButton} from '@mui/material';
+import {List, ListItemButton, ListItemIcon, ListItemText, Popover, ToggleButton, useColorScheme} from '@mui/material';
 import {lightBlue} from '@mui/material/colors';
+import type {Mode} from '@mui/system/cssVars/useCurrentColorScheme';
 import {FC, useMemo, useState} from 'react';
-import {useRecoilState, useRecoilValue} from 'recoil';
-import {Appearance, appearanceRawState, appearanceState} from './appearance';
 
 const iconMap = {
   light: LightMode,
@@ -28,9 +27,8 @@ const iconMap = {
 }
 
 export const AppearanceSelector: FC = () => {
-  const [appearanceRaw, setAppearanceRow] = useRecoilState(appearanceRawState);
-  const appearance = useRecoilValue(appearanceState);
-  const ButtonIcon = useMemo(() => iconMap[appearance], [appearance]);
+  const {mode, setMode} = useColorScheme();
+  const ButtonIcon = useMemo(() => iconMap[mode || 'system'], [mode]);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = !!anchorEl;
@@ -42,7 +40,7 @@ export const AppearanceSelector: FC = () => {
       onChange={(event) => setAnchorEl(event.currentTarget as HTMLButtonElement)}
       size="small"
     >
-      <ButtonIcon sx={appearanceRaw !== 'system' && {color: lightBlue[500]} || {}}/>
+      <ButtonIcon sx={mode !== 'system' && {color: lightBlue[500]} || {}}/>
     </ToggleButton>
     <Popover
       open={open}
@@ -53,18 +51,18 @@ export const AppearanceSelector: FC = () => {
       }}
       onClose={() => setAnchorEl(null)}
     >
-      <List defaultValue={appearanceRaw}>
+      <List defaultValue={mode || 'system'}>
         {Object.entries(iconMap).map(([key, Icon]) =>
           <ListItemButton
             key={key}
-            sx={appearanceRaw === key && {color: lightBlue[500]} || {}}
+            sx={mode === key && {color: lightBlue[500]} || {}}
             onClick={() => {
-              setAppearanceRow(key as Appearance);
+              setMode(key as Mode);
               setAnchorEl(null);
             }}
           >
             <ListItemIcon>
-              <Icon sx={appearanceRaw === key && {color: lightBlue[500]} || {}}/>
+              <Icon sx={mode === key && {color: lightBlue[500]} || {}}/>
             </ListItemIcon >
             <ListItemText children={key}/>
           </ListItemButton>

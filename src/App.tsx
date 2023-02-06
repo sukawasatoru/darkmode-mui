@@ -27,24 +27,21 @@ import {
   Stack,
   Switch,
   Typography,
-  useMediaQuery
+  useColorScheme
 } from '@mui/material';
 import {useState} from 'react';
-import {useRecoilValue} from 'recoil';
-import {appearanceRawState, appearanceState} from './appearance';
 import {AppearanceSelector} from './AppearanceSelector';
 import {Editor} from './Editor';
 
 function App() {
-  const appearance = useRecoilValue(appearanceState);
-  const appearanceRaw = useRecoilValue(appearanceRawState);
+  const {mode, systemMode} = useColorScheme();
   const [mySelect, setMySelect] = useState(1);
   return (
     <Container>
       <Stack spacing={2}>
         <Stack direction="row" spacing={2} alignItems="center">
           <Typography flexGrow={0}>
-            appearance: {appearance}, appearanceRaw: {appearanceRaw}
+            mode: {mode}, systemMode: {systemMode}
           </Typography>
           <Box flexGrow={1} />
           <AppearanceSelector />

@@ -21,6 +21,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dark mode mui</title>
   </head>
+  <script>
+    'use strict';
+    // refs.
+    // https://github.com/mui/material-ui/blob/v5.11.7/packages/mui-system/src/cssVars/getInitColorSchemeScript.tsx
+    // https://github.com/mui/material-ui/blob/v5.11.7/packages/mui-material/src/styles/CssVarsProvider.tsx
+    const attribute = 'data-mui-color-scheme';
+    const modeStorageKey = 'mui-mode';
+    const colorSchemeStorageKey = 'mui-color-scheme';
+
+    try {
+      let mode = localStorage.getItem(modeStorageKey);
+      if (mode === null) {
+        mode = 'system';
+        localStorage.setItem(modeStorageKey, mode);
+      }
+      let colorScheme = '';
+      if (mode === 'system') {
+        // handle system mode
+        var mql = window.matchMedia('(prefers-color-scheme: dark)');
+        if (mql.matches) {
+          colorScheme = localStorage.getItem(`${colorSchemeStorageKey}-dark`) || 'dark';
+        } else {
+          colorScheme = localStorage.getItem(`${colorSchemeStorageKey}-light`) || 'light';
+        }
+      }
+      if (mode === 'light') {
+        colorScheme = localStorage.getItem(`${colorSchemeStorageKey}-light`) || 'light';
+      }
+      if (mode === 'dark') {
+        colorScheme = localStorage.getItem(`${colorSchemeStorageKey}-dark`) || 'dark';
+      }
+      if (colorScheme) {
+        document.documentElement.setAttribute(attribute, colorScheme);
+      }
+    } catch (e) {}
+  </script>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
